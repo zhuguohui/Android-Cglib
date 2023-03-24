@@ -174,7 +174,7 @@ public final class ProxyBuilder<T> {
         dexCache.mkdir();
         return this;
     }
-    
+
     public ProxyBuilder<T> implementing(Class<?>... interfaces) {
         for (Class<?> i : interfaces) {
             if (!i.isInterface()) {
@@ -246,7 +246,7 @@ public final class ProxyBuilder<T> {
     public Class<? extends T> buildProxyClass() throws IOException {
         // try the cache to see if we've generated this one before
         @SuppressWarnings("unchecked") // we only populate the map with matching types
-                Class<? extends T> proxyClass = (Class) generatedProxyClasses.get(baseClass);
+        Class<? extends T> proxyClass = (Class) generatedProxyClasses.get(baseClass);
         if (proxyClass != null
                 && proxyClass.getClassLoader().getParent() == parentClassLoader
                 && interfaces.equals(asSet(proxyClass.getInterfaces()))) {
@@ -260,7 +260,7 @@ public final class ProxyBuilder<T> {
         TypeId<T> superType = TypeId.get(baseClass);
         generateConstructorsAndFields(dexMaker, generatedType, superType, baseClass);
         Method[] methodsToProxy = getMethodsToProxyRecursive();
-        generateCodeForAllMethods(dexMaker, generatedType, methodsToProxy, superType);
+        generateCodeForAllMethods(dexMaker, generatedType, methodsToProxy, superType,methodOverrideFilter);
         dexMaker.declare(generatedType, generatedName + ".generated", PUBLIC, superType,
                 getInterfacesAsTypeIds());
         ClassLoader classLoader = dexMaker.generateAndLoad(parentClassLoader, dexCache);
@@ -358,7 +358,7 @@ public final class ProxyBuilder<T> {
     }
 
     // TODO: test coverage for isProxyClass
-    
+
     /**
      * Returns true if {@code c} is a proxy class created by this builder.
      */
@@ -372,8 +372,19 @@ public final class ProxyBuilder<T> {
         }
     }
 
+    public interface MethodOverrideFilter{
+        boolean isOverrideMethod(Method method);
+    }
+
+    MethodOverrideFilter methodOverrideFilter;
+
+    public ProxyBuilder<T> setMethodOverrideFilter(MethodOverrideFilter methodOverrideFilter) {
+        this.methodOverrideFilter = methodOverrideFilter;
+        return this;
+    }
+
     private static <T, G extends T> void generateCodeForAllMethods(DexMaker dexMaker,
-                                                                   TypeId<G> generatedType, Method[] methodsToProxy, TypeId<T> superclassType) {
+                                                                   TypeId<G> generatedType, Method[] methodsToProxy, TypeId<T> superclassType, MethodOverrideFilter methodOverrideFilter) {
         TypeId<InvocationHandler> handlerType = TypeId.get(InvocationHandler.class);
         TypeId<Method[]> methodArrayType = TypeId.get(Method[].class);
         FieldId<G, InvocationHandler> handlerField =
@@ -385,6 +396,9 @@ public final class ProxyBuilder<T> {
         MethodId<InvocationHandler, Object> methodInvoke = handlerType.getMethod(TypeId.OBJECT,
                 "invoke", TypeId.OBJECT, methodType, objectArrayType);
         for (int m = 0; m < methodsToProxy.length; ++m) {
+            if(methodOverrideFilter!=null&&!methodOverrideFilter.isOverrideMethod(methodsToProxy[m])){
+                continue;
+            }
             /*
              * If the 5th method on the superclass Example that can be overridden were to look like
              * this:
@@ -530,7 +544,7 @@ public final class ProxyBuilder<T> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void invokeSuper(MethodId superMethod, Code superCode,
-            Local superThis, Local[] superArgs, Local superResult) {
+                                    Local superThis, Local[] superArgs, Local superResult) {
         superCode.invokeSuper(superMethod, superResult, superThis, superArgs);
     }
 
@@ -570,7 +584,7 @@ public final class ProxyBuilder<T> {
     }
 
     private static <T, G extends T> void generateConstructorsAndFields(DexMaker dexMaker,
-            TypeId<G> generatedType, TypeId<T> superType, Class<T> superClass) {
+                                                                       TypeId<G> generatedType, TypeId<T> superType, Class<T> superClass) {
         TypeId<InvocationHandler> handlerType = TypeId.get(InvocationHandler.class);
         TypeId<Method[]> methodArrayType = TypeId.get(Method[].class);
         FieldId<G, InvocationHandler> handlerField = generatedType.getField(
@@ -670,7 +684,7 @@ public final class ProxyBuilder<T> {
                 continue;
             }
             if (!Modifier.isPublic(method.getModifiers())
-					&& !Modifier.isProtected(method.getModifiers())) {
+                    && !Modifier.isProtected(method.getModifiers())) {
                 // Skip private methods, since they are invoked through direct
                 // invocation (as opposed to virtual). Therefore, it would not
                 // be possible to intercept any private method defined inside
@@ -718,7 +732,7 @@ public final class ProxyBuilder<T> {
     // This one is tricky to fix, I gave up.
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void generateCodeForReturnStatement(Code code, Class methodReturnType,
-            Local localForResultOfInvoke, Local localOfMethodReturnType, Local aBoxedResult) {
+                                                       Local localForResultOfInvoke, Local localOfMethodReturnType, Local aBoxedResult) {
         if (PRIMITIVE_TO_UNBOX_METHOD.containsKey(methodReturnType)) {
             code.cast(aBoxedResult, localForResultOfInvoke);
             MethodId unboxingMethodFor = getUnboxMethodForPrimitive(methodReturnType);
