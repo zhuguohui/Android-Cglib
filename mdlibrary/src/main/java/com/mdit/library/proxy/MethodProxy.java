@@ -36,7 +36,11 @@ public class MethodProxy {
 			throw new ProxyException(e.getMessage());
 		}
 	}
-	
+
+	public Class[] getArgsType() {
+		return argsType;
+	}
+
 	public Object invokeSuper(Object object, Object[] argsValue) {
 		return ((EnhancerInterface) object).executeSuperMethod$Enhancer$(methodName, argsType, argsValue);
 	}
