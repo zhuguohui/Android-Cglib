@@ -11,9 +11,7 @@ buildscript {
 
         mavenCentral()
         google()
-        maven{
-            url TRSMavenUrl
-        }
+
         maven { url 'https://jitpack.io' }
     }
     dependencies {
@@ -35,9 +33,7 @@ allprojects {
 
         mavenCentral()
         google()
-        maven{
-            url TRSMavenUrl
-        }
+
     }
 }
 
