@@ -37,8 +37,7 @@ afterEvaluate {
         publications {
             Production(MavenPublication) {
                 from components.release
-                // 使用方引用 implementation 'cn.com.jack:mavendemo:2.7.0-SNAPSHOT'
-                groupId = "com.trs.app"
+                groupId = "com.zhuguohui.app"
                 artifactId = "android-cglib"
                 version = versionName
                 // 上传source，这样使用放可以看到方法注释

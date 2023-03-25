@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MethodInterceptProxy.iml" filepath="$PROJECT_DIR$/MethodInterceptProxy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mdlibrary/mdlibrary.iml" filepath="$PROJECT_DIR$/mdlibrary/mdlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cglib.iml" filepath="$PROJECT_DIR$/.idea/modules/cglib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/cglib.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/cglib.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mdlibrary/cglib.mdlibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/mdlibrary/cglib.mdlibrary.iml" />
     </modules>
   </component>
 </project>
