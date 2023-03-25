@@ -5,7 +5,31 @@
 >MethodInterceptProxy for Android.It is used by AOP, testing, data access frameworks to generate dynamic proxy objects and intercept field access.
 > API compatible with **Android 2.3+**
 
+# 引用
+
+
+
+```groovy
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+
+
+```groovy
+	dependencies {
+	        implementation 'com.github.zhuguohui:Android-Cglib:v1.0.5'
+	}
+```
+
+
+
 # Usage 
+
 # java
 
 ```
@@ -52,15 +76,7 @@
         test.toast3(this);
 ```
 
-
----
-### About me
-
-An Android Developer in ZhengZhou.
-
-【[**我的简书地址**](http://www.jianshu.com/users/3c751e06dc32/latest_articles)】
-
-【[**我的CSDN地址**](http://blog.csdn.net/zhangke3016)】
+### 
 
 ---
 
