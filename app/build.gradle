@@ -27,7 +27,6 @@ dependencies {
     })
     implementation 'androidx.appcompat:appcompat:1.0.0'
     testImplementation 'junit:junit:4.12'
-    implementation ('com.trs.app:android-cglib:1.0.0:SNAPSHOTS@aar') { changing = true }
+    implementation 'com.github.zhuguohui:Android-Cglib:v1.0.0'
 }
 
-configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
